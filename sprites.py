@@ -56,30 +56,6 @@ class Player(pg.sprite.Sprite):
             self.vel =vec(PLAYER_SPEED,0).rotate(-self.rot)
         if keys[pg.K_DOWN] or keys[pg.K_s]:
             self.vel = vec(PLAYER_SPEED/2).rotate(-self.rot)
-            # self.vy = PLAYER_SPEED
-        # if self.vx != 0 and self.vy != 0:
-        #     self.vx *= 0.7071
-        #     self.vy *= 0.7071
-
-    # def collide_with_walls(self, dir):
-    #     if dir == 'x':
-    #         hits = pg.sprite.spritecollide(self, self.game.walls, False)
-    #         if hits:
-    #             if self.vx > 0:
-    #                 self.x = hits[0].rect.left - self.rect.width
-    #             if self.vx < 0:
-    #                 self.x = hits[0].rect.right
-    #             self.vx = 0
-    #             self.rect.x = self.x
-    #     if dir == 'y':
-    #         hits = pg.sprite.spritecollide(self, self.game.walls, False)
-    #         if hits:
-    #             if self.vy > 0:
-    #                 self.y = hits[0].rect.top - self.rect.height
-    #             if self.vy < 0:
-    #                 self.y = hits[0].rect.bottom
-    #             self.vy = 0
-    #             self.rect.y = self.y
 
     def update(self):
         self.get_keys()
@@ -114,31 +90,6 @@ class Mob(pg.sprite.Sprite):
         self.acc=vec(0,0)
         self.rect.center=self.pos
         self.rot=0
-        # self.vy=-100
-        # self.vx=-100
-        # # self.vx, self.vy = 10, 20
-        # self.x = x * TILESIZE
-        # self.y = y * TILESIZE
-
-    # def collide_with_walls(self, dir):
-    #     if dir == 'x':
-    #         hits = pg.sprite.spritecollide(self, self.game.walls, False)
-    #         if hits:
-    #             if self.vx > 0:
-    #                 self.x = hits[0].rect.left - self.rect.width
-    #             if self.vx < 0:
-    #                 self.x = hits[0].rect.right
-    #             self.vx = 0
-    #             self.rect.x = self.x
-    #     if dir == 'y':
-    #         hits = pg.sprite.spritecollide(self, self.game.walls, False)
-    #         if hits:
-    #             if self.vy > 0:
-    #                 self.y = hits[0].rect.top - self.rect.height
-    #             if self.vy < 0:
-    #                 self.y = hits[0].rect.bottom
-    #             self.vy = 0
-    #             self.rect.y = self.y
 
     def update(self):
         self.rot=(self.game.player.pos -self.pos). angle_to(vec(1,0))
@@ -162,19 +113,29 @@ class Wall(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.type = type
+        self.walls=[]
+        self.load_images()
+
         # self.image = pg.Surface((TILESIZE, TILESIZE))
         # self.image.fill(GREEN)
         if self.type == 1:
-            self.image = pg.image.load("bluewall.png")
+            self.image = self.walls[1]
         if self.type == 2:
-            self.image = pg.image.load("firewall.png")
+            self.image = self.walls[2]
         if self.type == 3:
-            self.image = pg.image.load("lair0.png")
+            self.image = self.walls[3]
         if self.type == 4:
-            self.image = pg.image.load("door.png")
-        self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
+            self.image = self.walls[4]
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+    def load_images(self):
+        for i in range(1,25):
+            filename = 'images/peice_{}.png'.format(i)
+            self.image = pg.image.load(filename)
+            self.image.set_colorkey(BLACK)
+            self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
+            self.walls.append(self.image)
+
